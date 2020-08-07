@@ -2,6 +2,26 @@ import numpy as np
 # from numpy.core.numeric import roll
 
 
+def check_array_time_step_divisible(arr, time_step):
+    """Checks the array if evenly divisible by time step, if not compute next
+    closest number and return back array with those elements
+
+    Args:
+        arr (numpy array): a numpy 2 dimensional array
+        time_step (int): number time steps or look back periods
+
+    Returns:
+        arr: numpy array with only the latest elements for length divisible by
+        time step
+    """
+    if len(arr) % time_step == 0:
+        return arr
+    else:
+        quotient = int(len(arr)/time_step)
+        n_length = quotient * time_step
+        return arr[-n_length:]
+
+
 def shift_array(arr, num, rolling=False, fill_value=-777):
     #  num = (np.abs(num) - 1) * np.sign(num)
     if rolling is True:
@@ -18,6 +38,9 @@ def shift_array(arr, num, rolling=False, fill_value=-777):
         result = result[result != fill_value]
         return result[:-1]
     else:
+        num = np.abs(num)
+        arr = check_array_time_step_divisible(arr, num)
+
         result = arr.reshape(-1, num, 1)
         nonroll_target = []
         for i in range(result.shape[0]):
@@ -37,6 +60,7 @@ def convert_3d_array(data, n_time_steps, features, rolling=False):
         NumPy 3D array formatted for LSTM analysis.
     """
     if rolling is False:
+        data = check_array_time_step_divisible(data, n_time_steps)
         return data.reshape((-1, n_time_steps, features))
     else:
         rolling3d = []
