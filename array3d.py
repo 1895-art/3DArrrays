@@ -1,10 +1,10 @@
 import numpy as np
-from numpy.core.numeric import roll
+# from numpy.core.numeric import roll
+
 
 def shift_array(arr, num, rolling=False, fill_value=-777):
     #  num = (np.abs(num) - 1) * np.sign(num)
-
-    if rolling == True:
+    if rolling is True:
         result = np.zeros_like(arr)
         num = (np.abs(num) - 1) * np.sign(num)
         if num > 0:
@@ -36,7 +36,7 @@ def convert_3d_array(data, n_time_steps, features, rolling=False):
     Returns:
         NumPy 3D array formatted for LSTM analysis.
     """
-    if rolling == False:
+    if rolling is False:
         return data.reshape((-1, n_time_steps, features))
     else:
         rolling3d = []
