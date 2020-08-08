@@ -31,25 +31,38 @@ def test_simple():
 
 def test_2d_non_rolling(labels):
     time_step = 10
-    two_dim = a3d.create_2d_target_array(labels, time_step, True)
+    two_dim = a3d.create_2d_target_array(labels, time_step, False)
     assert two_dim[0] == labels[time_step-1]
 
 
 def test_2d_odd_non_rolling(labels):
     time_step = 8
     data = np.copy(labels)
-    two_dim = a3d.create_2d_target_array(labels, time_step, True)
-    # labels = a3d.check_array_time_step_divisible(labels, time_step)
-    assert two_dim[0] == data[time_step-1]
+    data = a3d.check_array_time_step_divisible(data, time_step)
+    two_dim = a3d.create_2d_target_array(labels, time_step, False)
+    assert two_dim[0] == data.reshape(-1, time_step, 1)[0][-1]
 
 
 def test_2d_rolling(labels):
     time_step = 10
-    two_dim = a3d.create_2d_target_array(labels, time_step, False)
+    two_dim = a3d.create_2d_target_array(labels, time_step, True)
     assert two_dim[0] == labels[time_step-1]
+
+
+def test_3d_non_rolling(features, labels):
+    time_step = 10
+    three_dim = a3d.convert_3d_array(features, time_step, features.shape[1], False)
+    assert three_dim[0, -1, -1] == labels[time_step-1]
+
+
+def test_3d_odd_non_rolling(features, labels):
+    time_step = 8
+    labels = a3d.check_array_time_step_divisible(labels, time_step)
+    three_dim = a3d.convert_3d_array(features, time_step, features.shape[1], False)
+    assert three_dim[0, -1, -1] == labels.reshape(-1, time_step, 1)[0][-1]
 
 
 def test_3d_rolling(features, labels):
     time_step = 10
-    three_dim = a3d.convert_3d_array(features, time_step, features.shape[1], False)
+    three_dim = a3d.convert_3d_array(features, time_step, features.shape[1], True)
     assert three_dim[0, -1, -1] == labels[time_step-1]
