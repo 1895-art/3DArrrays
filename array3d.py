@@ -74,7 +74,7 @@ def convert_3d_array(data, n_time_steps, features, rolling=False):
 
 
 def create_2d_target_array(arr, time_steps, rolling=False, features=1):
-    if np.abs(time_steps) <=1:
+    if np.abs(time_steps) <= 1:
         return arr
     else:
         target_arr = shift_array(arr, -time_steps, rolling)
