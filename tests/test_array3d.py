@@ -1,17 +1,26 @@
+# import foo needing to be fixed
+import sys
+import os.path
+path_to_parent = os.path.abspath(os.path.join(os.path.dirname(__file__),
+                                              os.path.pardir))
+sys.path.append(path_to_parent)
 import array3d as a3d
+sys.path.remove(path_to_parent)
+# end import foo
+
 import numpy as np
 import pytest
 
 
 @pytest.fixture
 def labels():
-    data = np.genfromtxt('mock_data.csv', delimiter=',')
+    data = np.genfromtxt('tests/mock_data.csv', delimiter=',')
     return data[:, -1]
 
 
 @pytest.fixture
 def features():
-    data = np.genfromtxt('mock_data.csv', delimiter=',')
+    data = np.genfromtxt('tests/mock_data.csv', delimiter=',')
     return data
 
 
