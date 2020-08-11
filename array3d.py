@@ -1,4 +1,6 @@
 import numpy as np
+from numpy.core.numeric import roll
+from sklearn.model_selection import train_test_split
 # from numpy.core.numeric import roll
 
 
@@ -80,3 +82,22 @@ def create_2d_target_array(arr, time_steps, rolling=False, features=1):
         target_arr = shift_array(arr, -time_steps, rolling)
 
     return target_arr.reshape((-1, features))
+
+
+def create_3d_test_train(features, labels, timesteps, rolling=False, test_size=0.2, shuffle=False):
+    X_train, X_test, y_train, y_test = train_test_split(features,
+                                                        labels,
+                                                        shuffle=shuffle,
+                                                        test_size=0.2)
+    X3d_train = convert_3d_array(X_train, timesteps, X_train.shape[1],
+                                 rolling=rolling)
+    X3d_test = convert_3d_array(X_test, timesteps, X_test.shape[1],
+                                rolling=rolling)
+
+    y2d_train = create_2d_target_array(y_train, timesteps, rolling=rolling,
+                                       features=1)
+
+    y2d_test = create_2d_target_array(y_test, timesteps, rolling=rolling,
+                                      features=1)
+
+    return X3d_train, X3d_test, y2d_train, y2d_test
